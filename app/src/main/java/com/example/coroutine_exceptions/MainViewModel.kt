@@ -17,7 +17,11 @@ class MainViewModel : ViewModel() {
                     list.setValue(list.value?.plus(it))
                 }
             } catch (e: Throwable) {
-                list.setValue(list.value?.plus(e.toString()))
+                if (e is CancellationException) {
+                    throw e
+                } else {
+                    list.setValue(list.value?.plus(e.toString()))
+                }
             }
             try {
                 mainRepository.getException().also {
