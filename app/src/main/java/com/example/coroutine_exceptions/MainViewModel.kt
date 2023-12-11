@@ -19,8 +19,16 @@ class MainViewModel : ViewModel() {
         val resultExc = viewModelScope.async {
             mainRepository.getException()
         }
+        val resultData = viewModelScope.async {
+            mainRepository.getData()
+        }
         viewModelScope.launch(ceh) {
             resultExc.await()
+        }
+        viewModelScope.launch(ceh) {
+            resultData.await().also {
+                list.setValue(list.value?.plus(it))
+            }
         }
     }
 }
