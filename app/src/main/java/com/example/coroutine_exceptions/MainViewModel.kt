@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 class MainViewModel : ViewModel() {
     private val mainRepository = MainRepository()
@@ -16,14 +17,16 @@ class MainViewModel : ViewModel() {
 
     fun getSimpleException() {
         viewModelScope.launch(ceh) {
-            launch {
-                mainRepository.getException().also {
-                    list.setValue(list.value?.plus(it))
+            supervisorScope {
+                launch {
+                    mainRepository.getException().also {
+                        list.setValue(list.value?.plus(it))
+                    }
                 }
-            }
-            launch {
-                mainRepository.getData().also {
-                    list.setValue(list.value?.plus(it))
+                launch {
+                    mainRepository.getData().also {
+                        list.setValue(list.value?.plus(it))
+                    }
                 }
             }
         }
